@@ -17,5 +17,5 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-pnpm
 
-      - name: Check service types
-        run: pnpm --filter service checktype
+      - name: Check types
+        run: pnpm check-types

@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm prisma:generate && rspack build",
-    "checktype": "tsc --noEmit --incremental false",
+    "check-types": "pnpm prisma:generate && tsc --noEmit --incremental false",
     "dev": "pnpm prisma:generate && cross-env NODE_ENV=development rspack --watch --mode development",
     "start": "node dist/main.cjs",
     "prisma:generate": "prisma generate",

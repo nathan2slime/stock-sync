@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
+    "check-types": "turbo run check-types",
     "dev": "turbo run dev",
     "k3s:sync-local-images": "bash infrastructure/k3s/bin/sync-local-images.sh",
     "lint": "turbo run lint",
