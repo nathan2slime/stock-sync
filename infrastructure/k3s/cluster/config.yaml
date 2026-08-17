@@ -1,0 +1,6 @@
+# k3s/config/config.yaml
+
+write-kubeconfig-mode: "0644"
+
+tls-san:
+  - akira.local

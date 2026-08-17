@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: stock-sync
+  labels:
+    app.kubernetes.io/name: stock-sync
+    app.kubernetes.io/part-of: stock-sync
+
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: akira.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: stock-sync-service
+                port:
+                  name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stock-sync-web
+                port:
+                  name: http

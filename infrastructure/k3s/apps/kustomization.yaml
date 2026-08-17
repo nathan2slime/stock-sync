@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: stock-sync
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets/stock-sync-secret.yaml
+  - postgres/service.yaml
+  - postgres/statefulset.yaml
+  - service/deployment.yaml
+  - service/service.yaml
+  - web/deployment.yaml
+  - web/service.yaml
+  - ingress.yaml
