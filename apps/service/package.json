@@ -11,8 +11,8 @@
     "start": "node dist/main.cjs",
     "prisma:generate": "prisma generate",
     "lint": "rslint src",
-    "test": "rstest run",
-    "test:watch": "rstest watch"
+    "test": "pnpm prisma:generate && rstest run",
+    "test:watch": "pnpm prisma:generate && rstest watch"
   },
   "dependencies": {
     "@nestjs/common": "11.1.9",
