@@ -1,0 +1,22 @@
+name: Setup pnpm
+description: Shared pnpm and Node.js setup for CI jobs.
+
+inputs:
+  runtime:
+    description: Runtime passed to pnpm/setup.
+    required: false
+    default: node@24
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm and Node.js
+      uses: pnpm/setup@v2
+      with:
+        runtime: ${{ inputs.runtime }}
+        cache: true
+        install: false
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

@@ -3,18 +3,26 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
+    "check-types": "turbo run check-types",
     "dev": "turbo run dev",
     "k3s:sync-local-images": "bash infrastructure/k3s/bin/sync-local-images.sh",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "prepare": "lefthook install",
+    "commitlint": "commitlint"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@repo/rslint-config": "workspace:*",
     "@rslint/core": "0.7.3",
     "jiti": "2.7.0",
+    "lefthook": "^2.1.10",
     "prettier": "3.9.6",
     "turbo": "^2.10.10"
   },
   "packageManager": "pnpm@11.21.0",
-  "name": "with-rsbuild"
+  "name": "stock-sync"
 }

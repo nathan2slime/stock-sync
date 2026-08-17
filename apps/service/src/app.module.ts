@@ -8,7 +8,6 @@ import { PrismaService } from "~/prisma/prisma.service";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [".env", "../../.env"],
       isGlobal: true,
     }),
     TerminusModule,

@@ -6,10 +6,13 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm prisma:generate && rspack build",
+    "check-types": "pnpm prisma:generate && tsc --noEmit --incremental false",
     "dev": "pnpm prisma:generate && cross-env NODE_ENV=development rspack --watch --mode development",
     "start": "node dist/main.cjs",
     "prisma:generate": "prisma generate",
-    "lint": "rslint src"
+    "lint": "rslint src",
+    "test": "pnpm prisma:generate && rstest run",
+    "test:watch": "pnpm prisma:generate && rstest watch"
   },
   "dependencies": {
     "@nestjs/common": "11.1.9",
@@ -19,6 +22,7 @@
     "@nestjs/terminus": "^11.1.1",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@rstest/coverage-istanbul": "^0.11.8",
     "dotenv": "^17.4.2",
     "pg": "^8.23.0",
     "reflect-metadata": "^0.2.2",
@@ -26,9 +30,12 @@
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
+    "@nestjs/testing": "11.1.9",
     "@rspack/cli": "2.1.4",
     "@rspack/core": "2.1.4",
     "@rspack/dev-server": "2.1.0",
+    "@rstest/adapter-rspack": "^0.11.8",
+    "@rstest/core": "^0.11.8",
     "@types/node": "^24.13.3",
     "cross-env": "10.1.0",
     "prisma": "^7.9.1",
