@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: stock-sync-web
+  labels:
+    app.kubernetes.io/name: stock-sync-web
+    app.kubernetes.io/part-of: stock-sync
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stock-sync-web
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stock-sync-web
+        app.kubernetes.io/part-of: stock-sync
+
+    spec:
+      containers:
+        - name: stock-sync-web
+          image: stock-sync-web:latest
+          imagePullPolicy: Never
+
+          ports:
+            - name: http
+              containerPort: 80
