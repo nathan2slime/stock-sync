@@ -1,0 +1,30 @@
+{
+  "name": "service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "rspack build",
+    "dev": "cross-env NODE_ENV=development rspack --watch --mode development",
+    "start": "node dist/main.cjs",
+    "lint": "rslint src"
+  },
+  "dependencies": {
+    "@nestjs/common": "11.1.9",
+    "@nestjs/core": "11.1.9",
+    "@nestjs/platform-express": "11.1.9",
+    "reflect-metadata": "^0.2.2",
+    "run-script-webpack-plugin": "0.2.3",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@rspack/cli": "2.1.4",
+    "@rspack/core": "2.1.4",
+    "@rspack/dev-server": "2.1.0",
+    "@types/node": "^24.13.3",
+    "cross-env": "10.1.0",
+    "typescript": "^5.9.3",
+    "webpack-node-externals": "3.0.0"
+  }
+}
