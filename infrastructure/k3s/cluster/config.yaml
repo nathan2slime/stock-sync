@@ -4,3 +4,4 @@ write-kubeconfig-mode: "0644"
 
 tls-san:
   - akira.local
+  - akira.home.arpa

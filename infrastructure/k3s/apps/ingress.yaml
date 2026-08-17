@@ -10,16 +10,19 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: akira.local
+    - host: stocksync.akira.home.arpa
       http:
         paths:
-          - path: /api
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: stock-sync-service
                 port:
                   name: http
+    - host: sansan.akira.home.arpa
+      http:
+        paths:
           - path: /
             pathType: Prefix
             backend:

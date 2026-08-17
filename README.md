@@ -10,6 +10,44 @@ Run the following command:
 npx create-turbo@latest -e with-rsbuild
 ```
 
+## K3s
+
+K3s installs Traefik by default. The manifests in `infrastructure/k3s/apps`
+use that Traefik ingress class and expose the service at
+`http://service.akira.local` and the web app at `http://akira.local`.
+
+Create or edit the ignored local secret at
+`infrastructure/k3s/apps/secrets/stock-sync-secret.yaml` from the tracked
+example.
+
+Sync local application images into k3s before applying the manifests:
+
+```sh
+pnpm k3s:sync-local-images
+```
+
+This builds timestamped local image tags, imports them into k3s' containerd,
+applies `infrastructure/k3s/apps`, and updates the running deployments to the
+imported tags. It simulates pushing images to a registry without needing a local
+registry.
+
+Preview the commands without changing Docker or k3s with:
+
+```sh
+pnpm k3s:sync-local-images -- --dry-run
+```
+
+If those hostnames do not already resolve to your k3s node, add them to your
+local DNS or `/etc/hosts`.
+
+If `kubectl` cannot read `/etc/rancher/k3s/k3s.yaml`, install the k3s server
+config and restart k3s so it writes a user-readable kubeconfig:
+
+```sh
+sudo install -m 0644 infrastructure/k3s/cluster/config.yaml /etc/rancher/k3s/config.yaml
+sudo systemctl restart k3s
+```
+
 ## What's inside?
 
 This Turborepo includes the following packages and apps:
