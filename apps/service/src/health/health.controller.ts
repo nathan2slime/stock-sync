@@ -27,20 +27,6 @@ export class HealthController {
     return this.ready();
   }
 
-  @Get("live")
-  @HealthCheck()
-  live() {
-    return this.health.check([
-      () =>
-        this.disk.checkStorage("disk", {
-          path: "/",
-          thresholdPercent: 0.9,
-        }),
-      () => this.memory.checkHeap("memory_heap", 300 * mebibyte),
-      () => this.memory.checkRSS("memory_rss", 512 * mebibyte),
-    ]);
-  }
-
   @Get("ready")
   @HealthCheck()
   ready() {
@@ -52,7 +38,10 @@ export class HealthController {
         }),
       () => this.memory.checkHeap("memory_heap", 300 * mebibyte),
       () => this.memory.checkRSS("memory_rss", 512 * mebibyte),
-      () => this.prisma.pingCheck("postgres", this.prismaService, { timeout: 1_000 }),
+      () =>
+        this.prisma.pingCheck("postgres", this.prismaService, {
+          timeout: 1_000,
+        }),
     ]);
   }
 }
