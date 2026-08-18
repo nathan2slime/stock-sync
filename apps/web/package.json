@@ -9,7 +9,7 @@
     "build": "tsc && rsbuild build",
     "preview": "rsbuild preview",
     "lint": "rslint src tests",
-    "test": "pnpm test:unit && pnpm test:e2e",
+    "test": "pnpm test:unit",
     "test:unit": "rstest run --config rstest.config.ts",
     "test:e2e": "pnpm build && rstest run --config rstest.e2e.config.ts",
     "test:watch": "rstest watch --config rstest.config.ts"
