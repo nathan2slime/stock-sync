@@ -94,7 +94,6 @@ export const ProductTable = ({
       width: 190,
     },
     {
-      title: "Actions",
       key: "actions",
       render: (_: unknown, product) => (
         <ProductTableActions

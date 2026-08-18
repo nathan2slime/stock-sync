@@ -20,6 +20,7 @@ export const ProductForm = ({ form, onFinish }: ProductFormProps) => (
       >
         <Input
           allowClear
+          autoComplete="off"
           inputMode="numeric"
           maxLength={6}
           placeholder="342143901"
@@ -30,14 +31,14 @@ export const ProductForm = ({ form, onFinish }: ProductFormProps) => (
         name="name"
         rules={[{ required: true, message: "Name is required" }]}
       >
-        <Input allowClear placeholder="Cotton Red T-shirt" />
+        <Input allowClear autoComplete="off" placeholder="Cotton Red T-shirt" />
       </Form.Item>
       <Form.Item
         label="Quantity"
         name="quantity"
         rules={[{ required: true, message: "Quantity is required" }]}
       >
-        <InputNumber min={0} precision={0} />
+        <InputNumber autoComplete="off" min={0} precision={0} />
       </Form.Item>
     </Form>
   </div>

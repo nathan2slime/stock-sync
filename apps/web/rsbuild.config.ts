@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [pluginReact(), pluginTailwindcss()],
   tools: {
     rspack: {
+      devtool: "source-map",
       plugins: [
         tanstackRouter({
           target: "react",

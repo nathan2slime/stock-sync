@@ -1,6 +1,9 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import type { ThemeConfig } from "antd";
 import { App as AntdApp, ConfigProvider, theme as antdTheme } from "antd";
 import type { ReactNode } from "react";
+
+import { queryClient } from "~/api";
 
 /**
  * Props for the root Ant Design application provider.
@@ -30,7 +33,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       theme={industrialTheme}
       variant="outlined"
     >
-      <AntdApp component={false}>{children}</AntdApp>
+      <AntdApp component={false}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </AntdApp>
     </ConfigProvider>
   );
 };
