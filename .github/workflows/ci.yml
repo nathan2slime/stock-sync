@@ -16,25 +16,70 @@ permissions:
 jobs:
   lint:
     name: Lint
-    uses: ./.github/workflows/ci-lint.yml
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Lint
+        run: pnpm lint
 
   format:
     name: Format
-    uses: ./.github/workflows/ci-format.yml
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Check formatting
+        run: pnpm format:check
 
   typecheck:
     name: Type Check
     needs:
       - lint
       - format
-    uses: ./.github/workflows/ci-typecheck.yml
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Check types
+        run: pnpm check-types
 
   test:
-    name: Test
+    name: Tests
     needs: typecheck
-    uses: ./.github/workflows/ci-test.yml
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Tests
+        run: pnpm test
 
   build:
     name: Build
     needs: test
-    uses: ./.github/workflows/ci-build.yml
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Build
+        run: pnpm build
