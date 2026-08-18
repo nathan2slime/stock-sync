@@ -4,4 +4,5 @@ import { App } from "~/app";
 
 import "~/style.css";
 
-createRoot(document.getElementById("root")!).render(<App />);
+const root = createRoot(document.getElementById("root")!);
+root.render(<App />);
