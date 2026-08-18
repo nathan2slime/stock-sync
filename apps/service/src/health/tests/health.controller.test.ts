@@ -108,6 +108,9 @@ describe("HealthController", () => {
   });
 });
 
+/**
+ * Optional test doubles used to construct a health controller under test.
+ */
 type ControllerDependencies = {
   disk?: { checkStorage: (...args: unknown[]) => unknown };
   health?: { check: (...args: unknown[]) => unknown };
