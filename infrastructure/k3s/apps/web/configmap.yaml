@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 
 metadata:
-  name: stock-sync-config
+  name: stock-sync-web-config
   labels:
     app.kubernetes.io/part-of: stock-sync
 
 data:
   NODE_ENV: production
-  PORT: "5400"
-  CROSS_ORIGIN_SERVICE: "http://sansan.akira.home.arpa"
+  PORT: "3000"
+  REACT_APP_PUBLIC_API_URL: "http://stocksync.akira.home.arpa"

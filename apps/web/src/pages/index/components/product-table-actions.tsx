@@ -3,42 +3,26 @@ import { Button, Tooltip } from "antd";
 import { useState } from "react";
 
 import { ProductDeleteConfirmationModal } from "~/pages/index/components/product-delete-confirmation-modal";
-import { ProductEditorModal } from "~/pages/index/components/product-editor-modal";
-import { useProductEditor } from "~/pages/index/hooks/use-product-editor";
-import type { Product, ProductDraft } from "~/pages/index/schemas";
+import type { Product } from "~/pages/index/schemas";
 
 type ProductTableActionsProps = {
   isDeletingProduct: boolean;
-  isUpdatingProduct: boolean;
   onDeleteProduct: (id: Product["id"]) => Promise<Product | null>;
-  onUpdateProduct: (
-    id: Product["id"],
-    values: ProductDraft,
-  ) => Promise<Product | null>;
+  onEditProduct: (product: Product) => void;
   product: Product;
 };
 
 export const ProductTableActions = ({
   isDeletingProduct,
-  isUpdatingProduct,
   onDeleteProduct,
-  onUpdateProduct,
+  onEditProduct,
   product,
 }: ProductTableActionsProps) => {
-  const productEditor = useProductEditor();
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
 
   const handleEditProduct = () => {
-    productEditor.openEditProduct(product);
-  };
-
-  const saveEditedProduct = async (values: ProductDraft) => {
-    const updatedProduct = await onUpdateProduct(product.id, values);
-
-    if (updatedProduct) {
-      productEditor.closeProductModal();
-    }
+    onEditProduct(product);
   };
 
   const handleOpenDeleteConfirmation = () => {
@@ -59,7 +43,7 @@ export const ProductTableActions = ({
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 justify-center">
         <Tooltip title="Edit product">
           <Button
             aria-label="Edit product"
@@ -78,15 +62,6 @@ export const ProductTableActions = ({
           />
         </Tooltip>
       </div>
-
-      <ProductEditorModal
-        form={productEditor.productForm}
-        isSaving={isUpdatingProduct}
-        mode={productEditor.productModalMode}
-        onCancel={productEditor.closeProductModal}
-        onFinish={saveEditedProduct}
-        open={Boolean(productEditor.productModalMode)}
-      />
 
       <ProductDeleteConfirmationModal
         isSaving={isDeletingProduct}

@@ -1,20 +1,22 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { TerminusModule } from "@nestjs/terminus";
 import path from "node:path";
 
-import { HealthController } from "~/health/health.controller";
-import { PrismaService } from "~/prisma/prisma.service";
+import { DatabaseModule } from "~/database/database.module";
+import { HealthModule } from "~/health/health.module";
+
+const envFilePath = path.join(process.cwd(), "..", "..", ".env");
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [path.join(process.cwd(), "..", "..", ".env")],
+      envFilePath: [envFilePath],
     }),
-    TerminusModule,
+    HealthModule,
+    DatabaseModule,
   ],
-  controllers: [HealthController],
-  providers: [PrismaService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

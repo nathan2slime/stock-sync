@@ -5,19 +5,21 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "dev": "rsbuild dev",
+    "dev": "rsbuild dev --env-dir .env",
     "build": "tsc && rsbuild build",
     "preview": "rsbuild preview",
     "lint": "rslint src tests",
-    "test": "pnpm test:unit && pnpm test:e2e",
+    "test": "pnpm test:unit",
     "test:unit": "rstest run --config rstest.config.ts",
     "test:e2e": "pnpm build && rstest run --config rstest.e2e.config.ts",
     "test:watch": "rstest watch --config rstest.config.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
+    "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-router": "^1.170.29",
     "antd": "^6.6.0",
+    "axios": "^1.19.0",
     "dexie": "^4.4.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",

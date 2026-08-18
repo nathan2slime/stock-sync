@@ -4,6 +4,7 @@ packages:
 allowBuilds:
   '@nestjs/core': true
   '@prisma/engines': true
+  '@scarf/scarf': false
   lefthook: true
   prisma: true
   unrs-resolver: false
