@@ -2,18 +2,17 @@
   "extends": "@repo/typescript-config/rsbuild.json",
   "include": [
     "src",
-    "rsbuild.config.ts"
+    "tests",
+    "rsbuild.config.ts",
+    "rstest.config.ts",
+    "rstest.e2e.config.ts"
   ],
   "compilerOptions": {
     "jsx": "react-jsx",
     "strictNullChecks": true,
     "paths": {
-      "~/*": [
-        "./src/*"
-      ]
+      "~/*": ["./src/*"]
     },
-    "types": [
-      "@rsbuild/core/types"
-    ]
+    "types": ["@rsbuild/core/types", "node"]
   }
 }

@@ -8,7 +8,11 @@
     "dev": "rsbuild dev",
     "build": "tsc && rsbuild build",
     "preview": "rsbuild preview",
-    "lint": "rslint src"
+    "lint": "rslint src tests",
+    "test": "pnpm test:unit && pnpm test:e2e",
+    "test:unit": "rstest run --config rstest.config.ts",
+    "test:e2e": "pnpm build && rstest run --config rstest.e2e.config.ts",
+    "test:watch": "rstest watch --config rstest.config.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
@@ -25,9 +29,13 @@
     "@rsbuild/core": "2.1.11",
     "@rsbuild/plugin-react": "2.1.0",
     "@rsbuild/plugin-tailwindcss": "^2.0.3",
+    "@rstest/core": "^0.11.8",
+    "@rstest/playwright": "^0.11.8",
     "@tanstack/router-plugin": "^1.168.32",
+    "@types/node": "^24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
+    "playwright": "^1.62.1",
     "tailwindcss": "^4.3.3",
     "typescript": "7.0.2"
   }
