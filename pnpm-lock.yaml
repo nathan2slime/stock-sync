@@ -148,12 +148,18 @@ importers:
       '@rsbuild/plugin-tailwindcss':
         specifier: ^2.0.3
         version: 2.0.3(@rsbuild/core@2.1.11)(@rspack/core@2.1.9(@swc/helpers@0.5.23))
+      '@rstest/core':
+        specifier: ^0.11.8
+        version: 0.11.8
       '@rstest/playwright':
         specifier: ^0.11.8
         version: 0.11.8(@rstest/core@0.11.8)(playwright@1.62.1)
       '@tanstack/router-plugin':
         specifier: ^1.168.32
         version: 1.168.32(@rsbuild/core@2.1.11)(@rspack/core@2.1.9(@swc/helpers@0.5.23))(@tanstack/react-router@1.170.29(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(supports-color@8.1.1)
+      '@types/node':
+        specifier: ^24.13.3
+        version: 24.13.3
       '@types/react':
         specifier: 19.2.18
         version: 19.2.18
