@@ -25,9 +25,11 @@
     "@rsbuild/core": "2.1.11",
     "@rsbuild/plugin-react": "2.1.0",
     "@rsbuild/plugin-tailwindcss": "^2.0.3",
+    "@rstest/playwright": "^0.11.8",
     "@tanstack/router-plugin": "^1.168.32",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
+    "playwright": "^1.62.1",
     "tailwindcss": "^4.3.3",
     "typescript": "7.0.2"
   }
