@@ -11,6 +11,9 @@ export default defineConfig({
       plugins: [],
     }),
   }),
+  output: {
+    module: false,
+  },
   include: ["src/**/*.test.ts"],
   testEnvironment: "node",
   clearMocks: true,

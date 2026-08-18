@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "dev": "rsbuild dev",
+    "dev": "rsbuild dev --env-dir .env",
     "build": "tsc && rsbuild build",
     "preview": "rsbuild preview",
     "lint": "rslint src tests",

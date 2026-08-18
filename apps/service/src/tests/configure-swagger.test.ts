@@ -5,7 +5,7 @@ import { describe, expect, rs, test } from "@rstest/core";
 
 import { AppModule } from "~/app.module";
 import { configureSwagger, swaggerPath } from "~/configure-swagger";
-import { PrismaService } from "~/prisma/prisma.service";
+import { PrismaService } from "~/database/prisma.service";
 
 type OpenApiDocument = {
   info?: {

@@ -4,7 +4,7 @@ import axios from "axios";
 export const queryClient = new QueryClient();
 
 export const api = axios.create({
-  url: import.meta.env.REACT_API_URL,
+  baseURL: process.env.REACT_APP_PUBLIC_API_URL,
 });
 
 api.interceptors.response.use(

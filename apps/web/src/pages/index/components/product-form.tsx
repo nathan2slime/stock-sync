@@ -18,11 +18,12 @@ export const ProductForm = ({ form, onFinish }: ProductFormProps) => (
         name="sku"
         rules={[{ required: true, message: "SKU is required" }]}
       >
-        <Input
-          allowClear
+        <InputNumber
           autoComplete="off"
-          inputMode="numeric"
+          max={999999}
           maxLength={6}
+          style={{ width: "100%" }}
+          min={1}
           placeholder="342143901"
         />
       </Form.Item>

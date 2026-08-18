@@ -114,7 +114,6 @@ e2e(
     await page.getByRole("button", { name: "New" }).click();
     await page.getByPlaceholder("342143901").fill(productSku);
     await page.getByPlaceholder("Cotton Red T-shirt").fill(productName);
-    await page.getByRole("spinbutton").fill("3");
     await page.getByRole("button", { name: "Save" }).click();
 
     await page.getByText(productName).waitFor(visibleWaitOptions);

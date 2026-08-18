@@ -2,8 +2,10 @@ import { Loading3QuartersOutlined } from "@ant-design/icons";
 import type { TableProps } from "antd";
 import { Empty, Table, Tag } from "antd";
 
+import { ProductEditorModal } from "~/pages/index/components/product-editor-modal";
 import { ProductTableActions } from "~/pages/index/components/product-table-actions";
 import { ProductTableCellText } from "~/pages/index/components/product-table-cell-text";
+import type { useProductEditor } from "~/pages/index/hooks/use-product-editor";
 import type { Product, ProductDraft } from "~/pages/index/schemas";
 
 /**
@@ -13,12 +15,13 @@ type ProductTableProps = {
   isDeletingProduct: boolean;
   isLoading: boolean;
   isSaving: boolean;
-  isUpdatingProduct: boolean;
+  onCreateProduct: (values: ProductDraft) => Promise<Product | null>;
   onDeleteProduct: (id: Product["id"]) => Promise<Product | null>;
   onUpdateProduct: (
     id: Product["id"],
     values: ProductDraft,
   ) => Promise<Product | null>;
+  productEditor: ReturnType<typeof useProductEditor>;
   products: Product[];
 };
 
@@ -31,11 +34,33 @@ export const ProductTable = ({
   isDeletingProduct,
   isLoading,
   isSaving,
-  isUpdatingProduct,
+  onCreateProduct,
   onDeleteProduct,
   onUpdateProduct,
+  productEditor,
   products,
 }: ProductTableProps) => {
+  const productModal = productEditor.productModal;
+  const handleSaveProduct = async (values: ProductDraft) => {
+    const product = await saveProduct(values);
+
+    if (product) {
+      productEditor.closeProductModal();
+    }
+  };
+
+  const saveProduct = async (values: ProductDraft) => {
+    if (productModal) {
+      if (productModal.mode === "create") {
+        return onCreateProduct(values);
+      } else if (productModal.productId) {
+        return onUpdateProduct(productModal.productId, values);
+      }
+    }
+
+    return;
+  };
+
   const columns: TableProps<Product>["columns"] = [
     {
       title: "SKU",
@@ -98,9 +123,8 @@ export const ProductTable = ({
       render: (_: unknown, product) => (
         <ProductTableActions
           isDeletingProduct={isDeletingProduct}
-          isUpdatingProduct={isUpdatingProduct}
           onDeleteProduct={onDeleteProduct}
-          onUpdateProduct={onUpdateProduct}
+          onEditProduct={productEditor.openEditProduct}
           product={product}
         />
       ),
@@ -109,30 +133,42 @@ export const ProductTable = ({
   ];
 
   return (
-    <Table<Product>
-      columns={columns}
-      dataSource={products}
-      loading={{
-        indicator: (
-          <Loading3QuartersOutlined className="animate-spin" size={35} />
-        ),
-        spinning: isLoading || isSaving,
-      }}
-      bordered
-      showHeader
-      tableLayout="fixed"
-      locale={{
-        emptyText: (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            styles={{ root: { padding: "10rem 0" } }}
-            description="No products found"
-          />
-        ),
-      }}
-      pagination={false}
-      rowKey="id"
-      scroll={{ x: 1010 }}
-    />
+    <>
+      <Table<Product>
+        columns={columns}
+        dataSource={products}
+        virtual
+        loading={{
+          indicator: (
+            <Loading3QuartersOutlined className="animate-spin" size={35} />
+          ),
+          spinning: isLoading || isSaving,
+        }}
+        bordered
+        showHeader
+        tableLayout="fixed"
+        locale={{
+          emptyText: (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              styles={{ root: { padding: "10rem 0" } }}
+              description="No products found"
+            />
+          ),
+        }}
+        pagination={false}
+        scroll={{ y: 1000, x: 1000 }}
+        rowKey="id"
+      />
+
+      <ProductEditorModal
+        form={productEditor.productForm}
+        isSaving={isSaving}
+        mode={productEditor.productModalMode}
+        onCancel={productEditor.closeProductModal}
+        onFinish={handleSaveProduct}
+        open={Boolean(productEditor.productModalMode)}
+      />
+    </>
   );
 };

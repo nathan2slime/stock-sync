@@ -5,7 +5,7 @@ import type { Product, SyncOperation } from "~/pages/index/schemas";
 import {
   getProductFromOperations,
   getProductsFromOperations,
-} from "./products-from-operations";
+} from "../products-from-operations";
 
 const createdAt = "2026-08-18T12:00:00.000Z";
 

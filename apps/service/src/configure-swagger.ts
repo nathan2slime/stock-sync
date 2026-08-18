@@ -8,6 +8,7 @@ export const configureSwagger = (app: INestApplication) => {
     .setTitle("Stock Sync API")
     .setDescription("API documentation for the Stock Sync service.")
     .setVersion("1.0.0")
+    .setBasePath("api")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
