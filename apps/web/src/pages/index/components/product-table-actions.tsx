@@ -93,7 +93,6 @@ export const ProductTableActions = ({
         onCancel={handleCloseDeleteConfirmation}
         onConfirm={deleteSelectedProduct}
         open={isDeleteConfirmationOpen}
-        product={product}
       />
     </>
   );
