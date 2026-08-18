@@ -30,7 +30,7 @@ spec:
                 name: stock-sync-web
                 port:
                   name: http
-    - host: stocksync.nathan3boss.dev
+    - host: stocksync.akira.home.arpa
       http:
         paths:
           - path: /
