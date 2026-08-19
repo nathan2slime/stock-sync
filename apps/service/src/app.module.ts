@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { DatabaseModule } from "~/database/database.module";
 import { HealthModule } from "~/health/health.module";
+import { ProductModule } from "~/product/product.module";
 
 const envFilePath = path.join(process.cwd(), "..", "..", ".env");
 
@@ -15,6 +16,7 @@ const envFilePath = path.join(process.cwd(), "..", "..", ".env");
     }),
     HealthModule,
     DatabaseModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [],

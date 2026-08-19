@@ -12,5 +12,6 @@ resources:
   - service/deployment.yaml
   - service/service.yaml
   - web/deployment.yaml
+  - web/configmap.yaml
   - web/service.yaml
   - ingress.yaml
