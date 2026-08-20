@@ -7,6 +7,9 @@ import { spawn } from "node:child_process";
 const previewHost = "127.0.0.1";
 const previewPort = 4173;
 const baseUrl = `http://${previewHost}:${previewPort}`;
+const serviceApiUrl =
+  process.env.REACT_APP_PUBLIC_API_URL ?? "http://localhost:5400/api";
+const serviceApiOrigin = new URL(serviceApiUrl, baseUrl).origin;
 const chromiumArgs = ["--no-sandbox", "--disable-gpu"];
 const visibleWaitOptions = { state: "visible" as const, timeout: 5_000 };
 const strictScriptCsp = [
@@ -16,7 +19,7 @@ const strictScriptCsp = [
   "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self' ${serviceApiOrigin}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -101,6 +104,25 @@ e2e(
     await page.route("https://fonts.googleapis.com/**", async (route) => {
       await route.fulfill({ body: "", contentType: "text/css" });
     });
+    await page.route("**/api/products/paginate**", async (route) => {
+      await route.fulfill({
+        body: JSON.stringify({
+          data: [],
+          page: 1,
+          pages: 0,
+          perPage: 10,
+          total: 0,
+        }),
+        contentType: "application/json",
+      });
+    });
+    await page.route("**/api/products/create", async (route) => {
+      await route.fulfill({
+        body: JSON.stringify({ message: "Service unavailable" }),
+        contentType: "application/json",
+        status: 503,
+      });
+    });
 
     await page.goto(baseUrl);
 
@@ -117,6 +139,14 @@ e2e(
     await page.getByRole("button", { name: "Save" }).click();
 
     await page.getByText(productName).waitFor(visibleWaitOptions);
+    await page.getByRole("button", { name: "View" }).click();
+    await page.waitForURL(`${baseUrl}/pending-operations`);
+    await page
+      .getByRole("heading", { name: "Pending operations" })
+      .waitFor(visibleWaitOptions);
+    await page.getByText(productName).waitFor(visibleWaitOptions);
+    await page.getByRole("button", { name: "Back to inventory" }).click();
+    await page.waitForURL(baseUrl + "/");
 
     const cspViolations = await page.evaluate(() => {
       const windowWithViolations = window as typeof window & {

@@ -7,6 +7,7 @@ import { ProductTableActions } from "~/pages/index/components/product-table-acti
 import { ProductTableCellText } from "~/pages/index/components/product-table-cell-text";
 import type { useProductEditor } from "~/pages/index/hooks/use-product-editor";
 import type { Product, ProductDraft } from "~/pages/index/schemas";
+import { dateTimeFormat } from "~/utils/date-time-format";
 
 /**
  * Props for rendering the sortable inventory product table.
@@ -17,18 +18,19 @@ type ProductTableProps = {
   isSaving: boolean;
   onCreateProduct: (values: ProductDraft) => Promise<Product | null>;
   onDeleteProduct: (id: Product["id"]) => Promise<Product | null>;
+  onProductPaginationChange: (page: number, perPage: number) => void;
   onUpdateProduct: (
     id: Product["id"],
     values: ProductDraft,
   ) => Promise<Product | null>;
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+  };
   productEditor: ReturnType<typeof useProductEditor>;
   products: Product[];
 };
-
-const productDateTimeFormat = new Intl.DateTimeFormat("en", {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
 
 export const ProductTable = ({
   isDeletingProduct,
@@ -36,7 +38,9 @@ export const ProductTable = ({
   isSaving,
   onCreateProduct,
   onDeleteProduct,
+  onProductPaginationChange,
   onUpdateProduct,
+  pagination,
   productEditor,
   products,
 }: ProductTableProps) => {
@@ -97,9 +101,7 @@ export const ProductTable = ({
       dataIndex: "createdAt",
       ellipsis: { showTitle: false },
       render: (value: Product["createdAt"]) => (
-        <ProductTableCellText
-          value={productDateTimeFormat.format(new Date(value))}
-        />
+        <ProductTableCellText value={dateTimeFormat.format(new Date(value))} />
       ),
       sorter: (first, second) =>
         first.createdAt.localeCompare(second.createdAt),
@@ -110,9 +112,7 @@ export const ProductTable = ({
       dataIndex: "updatedAt",
       ellipsis: { showTitle: false },
       render: (value: Product["updatedAt"]) => (
-        <ProductTableCellText
-          value={productDateTimeFormat.format(new Date(value))}
-        />
+        <ProductTableCellText value={dateTimeFormat.format(new Date(value))} />
       ),
       sorter: (first, second) =>
         first.updatedAt.localeCompare(second.updatedAt),
@@ -156,7 +156,16 @@ export const ProductTable = ({
             />
           ),
         }}
-        pagination={false}
+        pagination={{
+          current: pagination.page,
+          onChange: onProductPaginationChange,
+          pageSize: pagination.perPage,
+          pageSizeOptions: ["10", "20", "40"],
+          showSizeChanger: true,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} products`,
+          total: pagination.total,
+        }}
         scroll={{ y: 1000, x: 1000 }}
         rowKey="id"
       />

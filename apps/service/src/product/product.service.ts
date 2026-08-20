@@ -34,8 +34,8 @@ export class ProductService {
     const pages = Math.ceil(total / perPage);
 
     const data = await this.prisma.product.findMany({
-      skip: (args.page - 1) * args.perPage,
-      take: args.perPage,
+      skip: (page - 1) * perPage,
+      take: perPage,
     });
 
     return { data, page, perPage, total, pages };

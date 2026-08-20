@@ -92,6 +92,41 @@ describe("getProductsFromOperations", () => {
       ]),
     ).toEqual([]);
   });
+
+  test("overlays sync operations onto service products", () => {
+    const bolt = createProduct(
+      "00000000-0000-4000-8000-000000000005",
+      "Bolt",
+      1005,
+    );
+    const cable = createProduct(
+      "00000000-0000-4000-8000-000000000006",
+      "Cable",
+      1006,
+    );
+    const washer = createProduct(
+      "00000000-0000-4000-8000-000000000007",
+      "Washer",
+      1007,
+    );
+    const updatedBolt = {
+      ...bolt,
+      quantity: 30,
+      updatedAt: "2026-08-18T12:15:00.000Z",
+      version: 2,
+    } satisfies Product;
+
+    expect(
+      getProductsFromOperations(
+        [
+          updateOperation("00000000-0000-4000-8000-000000000108", updatedBolt),
+          deleteOperation("00000000-0000-4000-8000-000000000109", cable.id),
+          createOperation("00000000-0000-4000-8000-000000000110", washer),
+        ],
+        [bolt, cable],
+      ),
+    ).toEqual([updatedBolt, washer]);
+  });
 });
 
 describe("getProductFromOperations", () => {

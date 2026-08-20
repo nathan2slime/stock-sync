@@ -1,11 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsOptional, Max, MaxLength, Min } from "class-validator";
+import {
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+} from "class-validator";
 
 export class CreateProductDto {
-  @IsInt()
-  @Max(999999)
-  @Min(1)
+  @IsInt({ message: "SKU must be a whole number." })
+  @Max(999999, { message: "SKU must have at most 6 digits." })
+  @Min(1, { message: "SKU must be greater than zero." })
+  @Type(() => Number)
   @ApiProperty({
     type: "number",
     description: "The SKU of the product",
@@ -13,7 +21,8 @@ export class CreateProductDto {
   })
   sku: number;
 
-  @MaxLength(450)
+  @IsString({ message: "Product name must be text." })
+  @MaxLength(450, { message: "Product name must be 450 characters or less." })
   @ApiProperty({
     type: "string",
     description: "The name of the product",
@@ -21,8 +30,9 @@ export class CreateProductDto {
   })
   name: string;
 
-  @IsInt()
-  @Min(0)
+  @IsInt({ message: "Quantity must be a whole number." })
+  @Min(0, { message: "Quantity cannot be negative." })
+  @Type(() => Number)
   @ApiProperty({
     type: "number",
     description: "The quantity of the product",
@@ -32,8 +42,9 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto {
-  @MaxLength(450)
   @IsOptional()
+  @IsString({ message: "Product name must be text." })
+  @MaxLength(450, { message: "Product name must be 450 characters or less." })
   @ApiProperty({
     type: "string",
     description: "The name of the product",
@@ -42,9 +53,10 @@ export class UpdateProductDto {
   })
   name: string;
 
-  @IsInt()
-  @Min(0)
   @IsOptional()
+  @IsInt({ message: "Quantity must be a whole number." })
+  @Min(0, { message: "Quantity cannot be negative." })
+  @Type(() => Number)
   @ApiProperty({
     type: "number",
     description: "The quantity of the product",
@@ -60,7 +72,7 @@ export class FindProductDto {
     description: "The page number for pagination",
     example: 1,
   })
-  @Min(1)
+  @Min(1, { message: "Page must be greater than zero." })
   @Type(() => Number)
   page: number;
 
@@ -69,8 +81,8 @@ export class FindProductDto {
     description: "The number of products per page",
     example: 10,
   })
-  @Min(1)
-  @Max(40)
+  @Min(1, { message: "Items per page must be greater than zero." })
+  @Max(40, { message: "Items per page cannot be greater than 40." })
   @Type(() => Number)
   perPage: number;
 }

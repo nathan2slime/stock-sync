@@ -89,8 +89,14 @@ const sortProductsByName = (first: Product, second: Product) =>
  *
  * @returns Products indexed by product id.
  */
-const getProductsByIdFromOperations = (operations: SyncOperation[]) => {
-  const productsById = new Map<string, Product>();
+const getProductsByIdFromProducts = (products: Product[]) =>
+  new Map(products.map((product) => [product.id, product]));
+
+const getProductsByIdFromOperations = (
+  operations: SyncOperation[],
+  products: Product[] = [],
+) => {
+  const productsById = getProductsByIdFromProducts(products);
 
   for (const operation of operations) {
     applyProductOperation(productsById, operation);
@@ -104,8 +110,11 @@ const getProductsByIdFromOperations = (operations: SyncOperation[]) => {
  *
  * @returns Products sorted alphabetically by name.
  */
-export const getProductsFromOperations = (operations: SyncOperation[]) =>
-  Array.from(getProductsByIdFromOperations(operations).values()).sort(
+export const getProductsFromOperations = (
+  operations: SyncOperation[],
+  products: Product[] = [],
+) =>
+  Array.from(getProductsByIdFromOperations(operations, products).values()).sort(
     sortProductsByName,
   );
 
@@ -117,4 +126,5 @@ export const getProductsFromOperations = (operations: SyncOperation[]) =>
 export const getProductFromOperations = (
   operations: SyncOperation[],
   id: string,
-) => getProductsByIdFromOperations(operations).get(id) ?? null;
+  products: Product[] = [],
+) => getProductsByIdFromOperations(operations, products).get(id) ?? null;
