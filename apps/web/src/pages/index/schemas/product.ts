@@ -5,7 +5,7 @@ export const productDraftSchema = z.object({
     .number()
     .int("SKU must be a whole number")
     .positive("SKU must be a positive number"),
-  name: z.string().trim().min(1, "Name is required").max(120),
+  name: z.string().trim().min(1, "Name is required").max(450),
   quantity: z.coerce
     .number()
     .int("Quantity must be a whole number")

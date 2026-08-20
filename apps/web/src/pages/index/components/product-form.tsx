@@ -32,7 +32,12 @@ export const ProductForm = ({ form, onFinish }: ProductFormProps) => (
         name="name"
         rules={[{ required: true, message: "Name is required" }]}
       >
-        <Input allowClear autoComplete="off" placeholder="Cotton Red T-shirt" />
+        <Input
+          allowClear
+          autoComplete="off"
+          maxLength={450}
+          placeholder="Cotton Red T-shirt"
+        />
       </Form.Item>
       <Form.Item
         label="Quantity"

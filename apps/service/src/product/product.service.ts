@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 
 import { PrismaService } from "~/database/prisma.service";
 import {
@@ -7,24 +11,62 @@ import {
   UpdateProductDto,
 } from "~/product/product.dto";
 
+const duplicateProductSkuMessage = "A product with this SKU already exists.";
+const productNotFoundMessage =
+  "We could not find this product. It may have already been removed.";
+
+const getDatabaseErrorCode = (error: unknown) => {
+  if (typeof error === "object" && error !== null && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+
+    if (typeof code === "string") {
+      return code;
+    }
+  }
+
+  return null;
+};
+
+const throwProductDatabaseError = (error: unknown): never => {
+  const code = getDatabaseErrorCode(error);
+
+  if (code === "P2002") {
+    throw new ConflictException(duplicateProductSkuMessage);
+  }
+
+  if (code === "P2025") {
+    throw new NotFoundException(productNotFoundMessage);
+  }
+
+  throw error;
+};
+
 @Injectable()
 export class ProductService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateProductDto) {
-    return this.prisma.product.create({
-      data: {
-        sku: data.sku,
-        name: data.name,
-        quantity: data.quantity,
-      },
-    });
+    try {
+      return await this.prisma.product.create({
+        data: {
+          sku: data.sku,
+          name: data.name,
+          quantity: data.quantity,
+        },
+      });
+    } catch (error) {
+      throwProductDatabaseError(error);
+    }
   }
 
   async remove(id: string) {
-    return this.prisma.product.delete({
-      where: { id },
-    });
+    try {
+      return await this.prisma.product.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throwProductDatabaseError(error);
+    }
   }
 
   async findAll(args: FindProductDto) {
@@ -34,17 +76,21 @@ export class ProductService {
     const pages = Math.ceil(total / perPage);
 
     const data = await this.prisma.product.findMany({
-      skip: (args.page - 1) * args.perPage,
-      take: args.perPage,
+      skip: (page - 1) * perPage,
+      take: perPage,
     });
 
     return { data, page, perPage, total, pages };
   }
 
   async update(id: string, data: UpdateProductDto) {
-    return this.prisma.product.update({
-      where: { id },
-      data,
-    });
+    try {
+      return await this.prisma.product.update({
+        where: { id },
+        data,
+      });
+    } catch (error) {
+      throwProductDatabaseError(error);
+    }
   }
 }

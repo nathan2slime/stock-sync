@@ -1,8 +1,4 @@
-import { liveQuery } from "dexie";
-import { useEffect, useState } from "react";
-
-import { inventoryDb } from "~/database/inventory-db";
-import { pendingSyncStatus } from "~/pages/index/utils/sync-operation";
+import { usePendingOperations } from "~/pages/index/hooks/use-pending-operations";
 
 /**
  * Subscribes to the local pending sync operation count.
@@ -10,22 +6,7 @@ import { pendingSyncStatus } from "~/pages/index/utils/sync-operation";
  * @returns The number of queued operations still waiting to sync.
  */
 export const usePendingOperationsCount = () => {
-  const [count, setCount] = useState(0);
+  const pendingOperations = usePendingOperations();
 
-  useEffect(() => {
-    const subscription = liveQuery(() =>
-      inventoryDb.operations.where("status").equals(pendingSyncStatus).count(),
-    ).subscribe({
-      next: setCount,
-      error: () => {
-        setCount(0);
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [setCount]);
-
-  return count;
+  return pendingOperations.data.length;
 };

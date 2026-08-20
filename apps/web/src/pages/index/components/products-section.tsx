@@ -14,10 +14,16 @@ type ProductsSectionProps = {
   isSaving: boolean;
   onCreateProduct: (values: ProductDraft) => Promise<Product | null>;
   onDeleteProduct: (id: Product["id"]) => Promise<Product | null>;
+  onProductPaginationChange: (page: number, perPage: number) => void;
   onUpdateProduct: (
     id: Product["id"],
     values: ProductDraft,
   ) => Promise<Product | null>;
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+  };
   products: Product[];
 };
 
@@ -27,7 +33,9 @@ export const ProductsSection = ({
   isSaving,
   onCreateProduct,
   onDeleteProduct,
+  onProductPaginationChange,
   onUpdateProduct,
+  pagination,
   products,
 }: ProductsSectionProps) => {
   const productEditor = useProductEditor();
@@ -54,7 +62,9 @@ export const ProductsSection = ({
           isSaving={isSaving}
           onCreateProduct={onCreateProduct}
           onDeleteProduct={onDeleteProduct}
+          onProductPaginationChange={onProductPaginationChange}
           onUpdateProduct={onUpdateProduct}
+          pagination={pagination}
           productEditor={productEditor}
           products={products}
         />
