@@ -1,10 +1,13 @@
 import { App as AntdApp } from "antd";
 import { useState } from "react";
 
+import { deleteProductMutationFn } from "~/api/mutations/product.mutation";
+import { queryClient } from "~/api";
 import { inventoryDb } from "~/database/inventory-db";
 import {
   getProductActionErrorMessage,
   getRequiredProduct,
+  pendingProductOperationSavedMessage,
   removeOptimisticProduct,
   type ProductMutationHookParams,
 } from "~/pages/index/utils/product-action-helpers";
@@ -45,7 +48,7 @@ const replaceQueuedProductOperationsWithDelete = async (
 };
 
 /**
- * Deletes products optimistically and replaces queued writes with a DELETE sync operation.
+ * Deletes products remotely, falling back to a queued local DELETE sync operation.
  *
  * @returns A delete mutation and its saving state.
  */
@@ -64,13 +67,20 @@ export const useDeleteProduct = ({
       const previousProducts = products;
       const now = new Date().toISOString();
 
-      setProducts(removeOptimisticProduct(products, id));
-
       try {
-        await replaceQueuedProductOperationsWithDelete(id, now);
-      } catch (error) {
-        setProducts(previousProducts);
-        throw error;
+        await deleteProductMutationFn(id);
+        setProducts(removeOptimisticProduct(products, id));
+        void queryClient.invalidateQueries({ queryKey: ["products"] });
+      } catch {
+        setProducts(removeOptimisticProduct(products, id));
+
+        try {
+          await replaceQueuedProductOperationsWithDelete(id, now);
+          message.warning(pendingProductOperationSavedMessage);
+        } catch (error) {
+          setProducts(previousProducts);
+          throw error;
+        }
       }
 
       return existingProduct;

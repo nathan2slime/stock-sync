@@ -11,7 +11,7 @@ import type {
 import { describe, expect, rs, test } from "@rstest/core";
 
 import { HealthController } from "~/health/health.controller";
-import type { PrismaService } from "~/prisma/prisma.service";
+import type { PrismaService } from "~/database/prisma.service";
 
 const mebibyte = 1024 * 1024;
 

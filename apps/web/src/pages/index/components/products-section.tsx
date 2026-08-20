@@ -2,6 +2,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Typography } from "antd";
 
 import { ProductTable } from "~/pages/index/components/product-table";
+import { useProductEditor } from "~/pages/index/hooks/use-product-editor";
 import type { Product, ProductDraft } from "~/pages/index/schemas";
 
 /**
@@ -11,13 +12,18 @@ type ProductsSectionProps = {
   isDeletingProduct: boolean;
   isLoading: boolean;
   isSaving: boolean;
-  isUpdatingProduct: boolean;
-  onCreateProduct: VoidFunction;
+  onCreateProduct: (values: ProductDraft) => Promise<Product | null>;
   onDeleteProduct: (id: Product["id"]) => Promise<Product | null>;
+  onProductPaginationChange: (page: number, perPage: number) => void;
   onUpdateProduct: (
     id: Product["id"],
     values: ProductDraft,
   ) => Promise<Product | null>;
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+  };
   products: Product[];
 };
 
@@ -25,32 +31,44 @@ export const ProductsSection = ({
   isDeletingProduct,
   isLoading,
   isSaving,
-  isUpdatingProduct,
   onCreateProduct,
   onDeleteProduct,
+  onProductPaginationChange,
   onUpdateProduct,
+  pagination,
   products,
-}: ProductsSectionProps) => (
-  <div className="mt-2">
-    <div className="flex w-full justify-between py-4 items-center">
-      <Typography.Title className="m-0!" level={5}>
-        Products
-      </Typography.Title>
-      <Button icon={<PlusOutlined />} type="primary" onClick={onCreateProduct}>
-        New
-      </Button>
-    </div>
+}: ProductsSectionProps) => {
+  const productEditor = useProductEditor();
 
-    <div className="flex flex-col gap-5">
-      <ProductTable
-        isDeletingProduct={isDeletingProduct}
-        isLoading={isLoading}
-        isSaving={isSaving}
-        isUpdatingProduct={isUpdatingProduct}
-        onDeleteProduct={onDeleteProduct}
-        onUpdateProduct={onUpdateProduct}
-        products={products}
-      />
+  return (
+    <div className="mt-2">
+      <div className="flex w-full justify-between py-4 items-center">
+        <Typography.Title className="m-0!" level={5}>
+          Products
+        </Typography.Title>
+        <Button
+          icon={<PlusOutlined />}
+          type="primary"
+          onClick={productEditor.openCreateProduct}
+        >
+          New
+        </Button>
+      </div>
+
+      <div className="flex flex-col gap-5">
+        <ProductTable
+          isDeletingProduct={isDeletingProduct}
+          isLoading={isLoading}
+          isSaving={isSaving}
+          onCreateProduct={onCreateProduct}
+          onDeleteProduct={onDeleteProduct}
+          onProductPaginationChange={onProductPaginationChange}
+          onUpdateProduct={onUpdateProduct}
+          pagination={pagination}
+          productEditor={productEditor}
+          products={products}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};

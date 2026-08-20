@@ -67,6 +67,9 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-pnpm
 
+      - name: Install Playwright Chromium
+        run: pnpm --filter web exec playwright install --with-deps chromium
+
       - name: Tests
         run: pnpm test
 

@@ -1,8 +1,13 @@
-import { App as AntdApp } from "antd";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
+import {
+  defaultProductQueryParams,
+  productQueryOptions,
+} from "~/api/queries/product.query";
+import type { ProductQueryParams } from "~/api/types/product";
 import type { Product } from "~/pages/index/schemas";
-import { inventoryDb } from "~/database/inventory-db";
+import { usePendingOperations } from "~/pages/index/hooks/use-pending-operations";
 import { getProductsFromOperations } from "~/pages/index/utils/products-from-operations";
 
 /**
@@ -18,24 +23,23 @@ const getReadErrorMessage = (error: unknown) => {
     return error.message;
   }
 
-  return "Could not read the local inventory";
-};
-
-const getStoredProducts = async () => {
-  const operations = await inventoryDb.operations
-    .orderBy("createdAt")
-    .toArray();
-
-  return getProductsFromOperations(operations);
+  return "We could not load your products right now.";
 };
 
 /**
- * Loads locally queued product operations and exposes the derived product list.
+ * Loads service products, overlays locally queued operations, and exposes the product list.
  *
  * @returns Product data, hydration state, and the product state setter for optimistic mutations.
  */
 export const useProducts = () => {
-  const { message } = AntdApp.useApp();
+  const [productQueryParams, setProductQueryParams] = useState(
+    defaultProductQueryParams,
+  );
+  const productsQuery = useQuery(productQueryOptions(productQueryParams));
+  const pendingOperations = usePendingOperations();
+  const productsErrorMessage = productsQuery.error
+    ? getReadErrorMessage(productsQuery.error)
+    : null;
   const [state, setState] = useState<ProductsHydrationState>({
     error: null,
     isLoading: true,
@@ -43,29 +47,41 @@ export const useProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const loadStoredProducts = async () => {
-      try {
-        const storedProducts = await getStoredProducts();
+    const remoteProducts = productsQuery.data?.data ?? [];
 
-        setProducts(storedProducts);
-        setState({ error: null, isLoading: false });
-      } catch (error) {
-        const errorMessage = getReadErrorMessage(error);
+    setProducts(
+      getProductsFromOperations(pendingOperations.data, remoteProducts),
+    );
+    setState({
+      error: productsErrorMessage ?? pendingOperations.error,
+      isLoading: productsQuery.isLoading || pendingOperations.isLoading,
+    });
+  }, [
+    pendingOperations,
+    productsErrorMessage,
+    productsQuery.data,
+    productsQuery.isLoading,
+    setProducts,
+    setState,
+  ]);
 
-        message.error(errorMessage);
-        setState({
-          error: errorMessage,
-          isLoading: false,
-        });
-      }
-    };
+  const productPagination = {
+    page: productQueryParams.page,
+    perPage: productQueryParams.perPage,
+    total: Math.max(productsQuery.data?.total ?? 0, products.length),
+  };
 
-    void loadStoredProducts();
-  }, [message, setProducts, setState]);
+  const setProductPagination = (pagination: ProductQueryParams) => {
+    setProductQueryParams(pagination);
+  };
 
   return {
     ...state,
     data: products,
+    isPendingOperationsLoading: pendingOperations.isLoading,
+    pendingOperations: pendingOperations.data,
+    productPagination,
     setProducts,
+    setProductPagination,
   };
 };

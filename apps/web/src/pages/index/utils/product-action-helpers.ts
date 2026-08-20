@@ -8,6 +8,10 @@ import type { Product } from "~/pages/index/schemas";
  */
 export const duplicateSkuErrorMessage =
   "A product with this SKU already exists.";
+export const productNotFoundErrorMessage =
+  "We could not find this product. It may have already been changed or removed.";
+export const pendingProductOperationSavedMessage =
+  "The system could not complete the request, so your change was saved on this device. You can send it from Pending operations later.";
 
 /**
  * Shared dependencies used by product mutation hooks.
@@ -17,11 +21,6 @@ export type ProductMutationHookParams = {
   setProducts: Dispatch<SetStateAction<Product[]>>;
 };
 
-/**
- * Gets the display message from a Zod validation issue.
- *
- * @returns The validation issue message.
- */
 const getZodIssueMessage = (issue: ZodIssue) => issue.message;
 
 /**
@@ -36,13 +35,19 @@ export const getProductActionErrorMessage = (error: unknown) => {
 
   if (error instanceof Error) {
     if (error.name === "ConstraintError") {
+      return "We could not save this change on this device. Please try again.";
+    }
+
+    if (error.message === duplicateSkuErrorMessage) {
       return duplicateSkuErrorMessage;
     }
 
-    return error.message;
+    if (error.message === productNotFoundErrorMessage) {
+      return productNotFoundErrorMessage;
+    }
   }
 
-  return "The local inventory action failed.";
+  return "We could not save this change. Please try again.";
 };
 
 /**
@@ -57,7 +62,7 @@ export const getRequiredProduct = (products: Product[], id: string) => {
     return product;
   }
 
-  throw new Error("Product not found");
+  throw new Error(productNotFoundErrorMessage);
 };
 
 /**

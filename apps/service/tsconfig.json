@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "types": ["@rspack/core/module", "node"],
+    "types": [
+      "@rspack/core/module",
+      "node"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "declaration": true,
     "removeComments": true,
+    "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -14,11 +18,14 @@
     "rootDir": "./",
     "incremental": true,
     "skipLibCheck": true,
-     "paths": {
+    "paths": {
       "~/*": [
         "./src/*"
       ]
     }
   },
-  "include": ["src/**/*", "main.ts"]
+  "include": [
+    "src/**/*",
+    "main.ts"
+  ]
 }

@@ -9,3 +9,4 @@ metadata:
 data:
   NODE_ENV: production
   PORT: "5400"
+  CROSS_ORIGIN_SERVICE: "http://sansan.akira.home.arpa"

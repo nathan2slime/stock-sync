@@ -1,0 +1,10 @@
+{
+    "[javascript]": {
+        "editor.wordWrap": "on",
+        "js/ts.preferences.importModuleSpecifier": "non-relative"
+    },
+    "[typescript]": {
+        "editor.wordWrap": "on",
+        "js/ts.preferences.importModuleSpecifier": "non-relative"
+    }
+}

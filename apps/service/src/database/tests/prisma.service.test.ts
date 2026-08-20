@@ -26,7 +26,7 @@ rs.mock("~/generated/prisma/client", () => ({
   },
 }));
 
-import { PrismaService } from "~/prisma/prisma.service";
+import { PrismaService } from "~/database/prisma.service";
 
 describe("PrismaService", () => {
   afterEach(() => {

@@ -23,7 +23,7 @@ COPY . .
 
 RUN pnpm --filter service build
 
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 ENV NODE_ENV="production"
 ENV PNPM_HOME="/pnpm"
@@ -35,7 +35,8 @@ WORKDIR /repo
 RUN corepack enable && corepack prepare pnpm@11.21.0 --activate
 
 COPY --from=build /repo ./
+RUN chmod +x ./apps/service/startup.sh
 
 EXPOSE 5400
 
-CMD ["pnpm", "--filter", "service", "start"]
+CMD ["./apps/service/startup.sh"]

@@ -1,6 +1,8 @@
 import { App as AntdApp } from "antd";
 import { useState } from "react";
 
+import { createProductMutationFn } from "~/api/mutations/product.mutation";
+import { queryClient } from "~/api";
 import {
   productDraftSchema,
   productSchema,
@@ -11,12 +13,13 @@ import {
   addOptimisticProduct,
   assertProductSkuIsUnique,
   getProductActionErrorMessage,
+  pendingProductOperationSavedMessage,
   type ProductMutationHookParams,
 } from "~/pages/index/utils/product-action-helpers";
 import { createSyncOperation } from "~/pages/index/utils/sync-operation";
 
 /**
- * Creates products optimistically and queues a local CREATE sync operation.
+ * Creates products remotely, falling back to a queued local CREATE sync operation.
  *
  * @returns A create mutation and its saving state.
  */
@@ -31,9 +34,10 @@ export const useCreateProduct = ({
     setIsCreatingProduct(true);
 
     try {
+      const parsedDraft = productDraftSchema.parse(draft);
       const now = new Date().toISOString();
-      const product = productSchema.parse({
-        ...productDraftSchema.parse(draft),
+      const fallbackProduct = productSchema.parse({
+        ...parsedDraft,
         id: crypto.randomUUID(),
         createdAt: now,
         version: 1,
@@ -41,19 +45,35 @@ export const useCreateProduct = ({
       });
       const previousProducts = products;
 
-      assertProductSkuIsUnique(product, products);
-      setProducts(addOptimisticProduct(products, product));
+      assertProductSkuIsUnique(fallbackProduct, products);
 
       try {
-        await inventoryDb.operations.add(
-          createSyncOperation(product.id, "CREATE", product, now),
-        );
-      } catch (error) {
-        setProducts(previousProducts);
-        throw error;
+        const product = await createProductMutationFn(parsedDraft);
+
+        setProducts(addOptimisticProduct(products, product));
+        void queryClient.invalidateQueries({ queryKey: ["products"] });
+
+        return product;
+      } catch {
+        setProducts(addOptimisticProduct(products, fallbackProduct));
+
+        try {
+          await inventoryDb.operations.add(
+            createSyncOperation(
+              fallbackProduct.id,
+              "CREATE",
+              fallbackProduct,
+              now,
+            ),
+          );
+          message.warning(pendingProductOperationSavedMessage);
+        } catch (error) {
+          setProducts(previousProducts);
+          throw error;
+        }
       }
 
-      return product;
+      return fallbackProduct;
     } catch (error) {
       message.error(getProductActionErrorMessage(error));
       return null;
