@@ -15,9 +15,16 @@ const duplicateProductSkuMessage = "A product with this SKU already exists.";
 const productNotFoundMessage =
   "We could not find this product. It may have already been removed.";
 
+type DatabaseErrorWithCode = {
+  code?: unknown;
+};
+
+const hasDatabaseErrorCode = (error: unknown): error is DatabaseErrorWithCode =>
+  typeof error === "object" && error !== null && "code" in error;
+
 const getDatabaseErrorCode = (error: unknown) => {
-  if (typeof error === "object" && error !== null && "code" in error) {
-    const code = (error as { code?: unknown }).code;
+  if (hasDatabaseErrorCode(error)) {
+    const { code } = error;
 
     if (typeof code === "string") {
       return code;
