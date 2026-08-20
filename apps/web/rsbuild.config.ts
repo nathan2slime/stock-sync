@@ -10,7 +10,9 @@ const { publicVars } = loadEnv({
 });
 
 export default defineConfig({
-  html: {},
+  html: {
+    title: "Stock Sync",
+  },
   plugins: [pluginReact(), pluginTailwindcss()],
   source: {
     define: publicVars,
