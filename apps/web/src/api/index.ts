@@ -20,6 +20,30 @@ const getResponseMessage = (message: unknown) => {
   return null;
 };
 
+type ApiErrorResponseData = Partial<{
+  data: unknown;
+  message: unknown;
+}>;
+
+const hasApiErrorResponseData = (data: unknown): data is ApiErrorResponseData =>
+  typeof data === "object" && !!data;
+
+const getApiResponseMessage = (data: unknown) => {
+  if (hasApiErrorResponseData(data)) {
+    const directMessage = getResponseMessage(data.message);
+
+    if (directMessage) {
+      return directMessage;
+    }
+
+    if (hasApiErrorResponseData(data.data)) {
+      return getResponseMessage(data.data.message);
+    }
+  }
+
+  return null;
+};
+
 const getApiErrorMessage = (error: unknown) => {
   if (isAxiosError(error)) {
     const response = error.response;
@@ -30,7 +54,7 @@ const getApiErrorMessage = (error: unknown) => {
       }
 
       if (response.data) {
-        const responseMessage = getResponseMessage(response.data.message);
+        const responseMessage = getApiResponseMessage(response.data);
 
         if (responseMessage) {
           return responseMessage;
