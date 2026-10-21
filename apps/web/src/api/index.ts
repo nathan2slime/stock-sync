@@ -50,7 +50,7 @@ const getApiErrorMessage = (error: unknown) => {
 
     if (response) {
       if (response.status >= 500) {
-        return "The system is having trouble right now. Please try again in a moment.";
+        return "The system is having trouble right now";
       }
 
       if (response.data) {

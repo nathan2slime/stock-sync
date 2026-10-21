@@ -7,7 +7,6 @@ import { inventoryDb } from "~/database/inventory-db";
 import {
   getProductActionErrorMessage,
   getRequiredProduct,
-  pendingProductOperationSavedMessage,
   removeOptimisticProduct,
   type ProductMutationHookParams,
 } from "~/pages/index/utils/product-action-helpers";
@@ -76,7 +75,6 @@ export const useDeleteProduct = ({
 
         try {
           await replaceQueuedProductOperationsWithDelete(id, now);
-          message.warning(pendingProductOperationSavedMessage);
         } catch (error) {
           setProducts(previousProducts);
           throw error;

@@ -10,8 +10,6 @@ export const duplicateSkuErrorMessage =
   "A product with this SKU already exists.";
 export const productNotFoundErrorMessage =
   "We could not find this product. It may have already been changed or removed.";
-export const pendingProductOperationSavedMessage =
-  "The system could not complete the request, so your change was saved on this device. You can send it from Pending operations later.";
 
 /**
  * Shared dependencies used by product mutation hooks.
@@ -58,9 +56,7 @@ export const getProductActionErrorMessage = (error: unknown) => {
 export const getRequiredProduct = (products: Product[], id: string) => {
   const product = products.find((existingProduct) => existingProduct.id === id);
 
-  if (product) {
-    return product;
-  }
+  if (product) return product;
 
   throw new Error(productNotFoundErrorMessage);
 };

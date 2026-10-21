@@ -13,7 +13,6 @@ import {
   addOptimisticProduct,
   assertProductSkuIsUnique,
   getProductActionErrorMessage,
-  pendingProductOperationSavedMessage,
   type ProductMutationHookParams,
 } from "~/pages/index/utils/product-action-helpers";
 import { createSyncOperation } from "~/pages/index/utils/sync-operation";
@@ -66,7 +65,6 @@ export const useCreateProduct = ({
               now,
             ),
           );
-          message.warning(pendingProductOperationSavedMessage);
         } catch (error) {
           setProducts(previousProducts);
           throw error;

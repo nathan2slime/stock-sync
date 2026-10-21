@@ -13,7 +13,6 @@ import {
   assertProductSkuIsUnique,
   getProductActionErrorMessage,
   getRequiredProduct,
-  pendingProductOperationSavedMessage,
   replaceOptimisticProduct,
   type ProductMutationHookParams,
 } from "~/pages/index/utils/product-action-helpers";
@@ -67,7 +66,6 @@ export const useUpdateProduct = ({
               now,
             ),
           );
-          message.warning(pendingProductOperationSavedMessage);
         } catch (error) {
           setProducts(previousProducts);
           throw error;
